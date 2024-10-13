@@ -12,11 +12,14 @@ app = Flask(__name__)
 @app.route('/predict', methods=['POST'])
 def predict():
     data = request.json
-    text = data.get('text', '')
+    texts = data.get('texts', [])  # Lấy danh sách các câu văn bản từ JSON
 
-    # Sử dụng pipeline để phân tích cảm xúc
-    result = sentiment_pipeline(text)
-    return jsonify(result)
+    # Sử dụng pipeline để phân tích cảm xúc cho từng câu trong danh sách
+    results = []
+    for text in texts:
+        prediction = sentiment_pipeline(text)
+        results.append(prediction[0])
+    return jsonify(results)
 
 
 if __name__ == '__main__':
